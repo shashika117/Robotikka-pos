@@ -1,5 +1,6 @@
 package com.devstack.pos.controller;
 
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +14,9 @@ import java.io.IOException;
 public class LoginFormController {
 
     public JFXTextField txtEmail;
-    public JFXTextField txtPassword;
+
     public AnchorPane context;
+    public JFXPasswordField txtPassword;
 
     public void signInOnAction(ActionEvent event) {
 
