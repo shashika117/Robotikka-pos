@@ -1,8 +1,8 @@
 package com.devstack.pos.controller;
 
+import com.devstack.pos.util.PasswordManager;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import com.mysql.cj.jdbc.Driver;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -35,12 +35,11 @@ public class SignUpFormController {
 
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,txtEmail.getText());
-            statement.setString(2,txtPassword.getText());
+            statement.setString(2, PasswordManager.encryptPassword(txtPassword.getText()));
 
             if (statement.executeUpdate()>0){
                 new Alert(Alert.AlertType.INFORMATION,"User added!").show();
-                txtEmail.clear();
-                txtPassword.clear();
+                clearFields();
             }else {
                 new Alert(Alert.AlertType.WARNING,"Try again!").show();
             }
@@ -50,6 +49,12 @@ public class SignUpFormController {
         }
 
     }
+
+    private void clearFields() {
+        txtEmail.clear();
+        txtPassword.clear();
+    }
+
     public void setUi(String url) throws IOException {
         Stage stage = (Stage) context.getScene().getWindow();
         stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/"+url+".fxml"))));
