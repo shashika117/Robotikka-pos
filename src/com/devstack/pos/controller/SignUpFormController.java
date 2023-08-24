@@ -34,8 +34,8 @@ public class SignUpFormController {
             String sql = "INSERT INTO user VALUES (?,?)";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,txtEmail.getText());
-            statement.setString(2, PasswordManager.encryptPassword(txtPassword.getText()));
+            statement.setString(1,txtEmail.getText().toLowerCase().trim());
+            statement.setString(2, PasswordManager.encryptPassword(txtPassword.getText().trim()));
 
             if (statement.executeUpdate()>0){
                 new Alert(Alert.AlertType.INFORMATION,"User added!").show();
