@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.IOException;
 import java.sql.*;
@@ -35,7 +34,7 @@ public class LoginFormController {
             if (set.next()) {
                 if (PasswordManager.checkPassword(
                         txtPassword.getText().trim(), set.getString("password"))) {
-                    System.out.println("Completed");
+                    setUi("DashboardForm");
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Wrong password!").show();
                 }
@@ -46,6 +45,8 @@ public class LoginFormController {
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -27,25 +27,29 @@ public class SignUpFormController {
     }
 
     public void registerOnAction(ActionEvent event) {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/robotikka","root","1234");
-            String sql = "INSERT INTO user VALUES (?,?)";
+        if (txtEmail.getText().trim().equals("") || txtPassword.getText().trim().equals("")) {
+            new Alert(Alert.AlertType.WARNING, "email or password cannot be empty!").show();
+        } else {
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/robotikka", "root", "1234");
+                String sql = "INSERT INTO user VALUES (?,?)";
 
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,txtEmail.getText().toLowerCase().trim());
-            statement.setString(2, PasswordManager.encryptPassword(txtPassword.getText().trim()));
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, txtEmail.getText().toLowerCase().trim());
+                statement.setString(2, PasswordManager.encryptPassword(txtPassword.getText().trim()));
 
-            if (statement.executeUpdate()>0){
-                new Alert(Alert.AlertType.INFORMATION,"User added!").show();
-                clearFields();
-            }else {
-                new Alert(Alert.AlertType.WARNING,"Try again!").show();
+                if (statement.executeUpdate() > 0) {
+                    new Alert(Alert.AlertType.INFORMATION, "User added!").show();
+                    clearFields();
+                } else {
+                    new Alert(Alert.AlertType.WARNING, "Try again!").show();
+                }
+
+            } catch (SQLException | ClassNotFoundException e) {
+                new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             }
-
-        } catch (SQLException | ClassNotFoundException e) {
-            new Alert(Alert.AlertType.ERROR,e.getMessage()).show();
         }
 
     }
@@ -57,6 +61,6 @@ public class SignUpFormController {
 
     public void setUi(String url) throws IOException {
         Stage stage = (Stage) context.getScene().getWindow();
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/"+url+".fxml"))));
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/" + url + ".fxml"))));
     }
 }
