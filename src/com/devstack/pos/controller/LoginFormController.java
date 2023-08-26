@@ -1,5 +1,7 @@
 package com.devstack.pos.controller;
 
+import com.devstack.pos.dao.DatabaseAccessCode;
+import com.devstack.pos.dto.UserDto;
 import com.devstack.pos.util.PasswordManager;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -22,18 +24,10 @@ public class LoginFormController {
 
     public void signInOnAction() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/robotikka", "root", "1234");
-            String sql = "SELECT * FROM user WHERE email = ?";
-
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, txtEmail.getText().trim().toLowerCase());
-
-            ResultSet set = statement.executeQuery();
-            if (set.next()) {
+            UserDto ud = DatabaseAccessCode.findUser(txtEmail.getText().trim().toLowerCase());
+            if (ud!=null) {
                 if (PasswordManager.checkPassword(
-                        txtPassword.getText().trim(), set.getString("password"))) {
+                        txtPassword.getText().trim(), ud.getPassword())) {
                     setUi("DashboardForm");
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Wrong password!").show();

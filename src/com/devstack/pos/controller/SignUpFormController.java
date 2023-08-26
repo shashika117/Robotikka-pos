@@ -1,5 +1,6 @@
 package com.devstack.pos.controller;
 
+import com.devstack.pos.dao.DatabaseAccessCode;
 import com.devstack.pos.util.PasswordManager;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -31,16 +32,10 @@ public class SignUpFormController {
             new Alert(Alert.AlertType.WARNING, "email or password cannot be empty!").show();
         } else {
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection connection = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/robotikka", "root", "1234");
-                String sql = "INSERT INTO user VALUES (?,?)";
+                if (DatabaseAccessCode.createUser(
+                        txtEmail.getText().toLowerCase().trim(),
+                        PasswordManager.encryptPassword(txtPassword.getText().trim()))) {
 
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, txtEmail.getText().toLowerCase().trim());
-                statement.setString(2, PasswordManager.encryptPassword(txtPassword.getText().trim()));
-
-                if (statement.executeUpdate() > 0) {
                     new Alert(Alert.AlertType.INFORMATION, "User added!").show();
                     clearFields();
                 } else {
