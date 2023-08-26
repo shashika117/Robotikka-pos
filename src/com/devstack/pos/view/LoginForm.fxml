@@ -37,7 +37,7 @@
             </cursor>
         </JFXButton>
         <Text layoutX="172.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OR" />
-        <JFXPasswordField fx:id="txtPassword" layoutX="36.0" layoutY="175.0" onAction="#passwordOnAction" prefHeight="25.0" prefWidth="289.0" promptText="password">
+        <JFXPasswordField fx:id="txtPassword" labelFloat="true" layoutX="36.0" layoutY="175.0" onAction="#passwordOnAction" prefHeight="25.0" prefWidth="289.0" promptText="password">
             <font>
                 <Font name="System Bold" size="12.0" />
             </font>
