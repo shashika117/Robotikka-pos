@@ -4,9 +4,8 @@ import com.devstack.pos.dto.CustomerDto;
 import com.devstack.pos.dto.UserDto;
 
 import java.sql.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class DatabaseAccessCode {
     //User management
@@ -94,13 +93,13 @@ public class DatabaseAccessCode {
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet set = statement.executeQuery();
 
-        List<CustomerDto> customers = null;
+        List<CustomerDto> customers = new ArrayList<>();
         while (set.next()) {
             customers.add(new CustomerDto(
                     set.getString("email"),
                     set.getString("name"),
                     set.getString("contact"),
-                    Double.valueOf(set.getString("salary"))
+                    set.getDouble("salary")
             ));
         }
         return customers;
@@ -119,9 +118,10 @@ public class DatabaseAccessCode {
     }
 
     public static List<CustomerDto> searchCustomer(String searchText) throws ClassNotFoundException, SQLException {
+        searchText = "%"+searchText+"%";
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/robotikka", "root", "1234");
-        String sql = "SELECT * FROM customer WHERE email LIKE %?% || name LIKE %?% || contact LIKE %?% || salary LIKE %?%";
+        String sql = "SELECT * FROM customer WHERE email LIKE ? || name LIKE ? || contact LIKE ? || salary LIKE ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1,searchText);
         statement.setString(2,searchText);
@@ -129,7 +129,7 @@ public class DatabaseAccessCode {
         statement.setString(4,searchText);
         ResultSet set = statement.executeQuery();
 
-        List<CustomerDto> customers = null;
+        List<CustomerDto> customers = new ArrayList<>();
         while (set.next()) {
             customers.add(new CustomerDto(
                     set.getString("email"),
