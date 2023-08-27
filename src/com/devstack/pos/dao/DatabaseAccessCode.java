@@ -44,7 +44,7 @@ public class DatabaseAccessCode {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection connection = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/robotikka", "root", "1234");
-        String sql = "INSERT INTO custoemr VALUES (?,?,?,?)";
+        String sql = "INSERT INTO customer VALUES (?,?,?,?)";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, email);
         statement.setString(2, name);

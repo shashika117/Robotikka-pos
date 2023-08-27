@@ -54,7 +54,7 @@ public class CustomerFormController {
                 new Alert(Alert.AlertType.INFORMATION,"Customer saved successfully!").show();
                 clearFields();
             }else {
-                new Alert(Alert.AlertType.WARNING,"Try again!")
+                new Alert(Alert.AlertType.WARNING,"Try again!");
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
