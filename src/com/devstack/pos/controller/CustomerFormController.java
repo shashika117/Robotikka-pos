@@ -57,6 +57,22 @@ public class CustomerFormController {
             );
         }
         tblCustomer.setItems(customers);
+        tblCustomer.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (newValue != null) {
+                        setItemsToFields(newValue);
+                    }
+                }
+        );
+    }
+
+    private void setItemsToFields(CustomerTm customerTm) {
+        txtEmail.setText(customerTm.getEmail());
+        txtEmail.setEditable(false);
+        txtName.setText(customerTm.getName());
+        txtContact.setText(customerTm.getContact());
+        txtSalary.setText(String.valueOf(customerTm.getSalary()));
+        btnSaveCustomer.setText("Update Customer");
     }
 
     public void backToHomeOnAction(ActionEvent event) throws IOException {
@@ -68,6 +84,7 @@ public class CustomerFormController {
     }
 
     public void addNewCustomerOnAction(ActionEvent event) {
+        txtEmail.setEditable(true);
         clearFields();
         txtEmail.requestFocus();
         btnSaveCustomer.setText("Save Customer");
@@ -82,17 +99,33 @@ public class CustomerFormController {
             new Alert(Alert.AlertType.WARNING, "fields cannot be empty!").show();
         } else {
             try {
-                if (DatabaseAccessCode.creatCustomer(
-                        txtEmail.getText().toLowerCase().trim(),
-                        txtName.getText().trim(),
-                        txtContact.getText(),
-                        Double.parseDouble(txtSalary.getText().trim()))
-                ) {
-                    new Alert(Alert.AlertType.INFORMATION, "Customer saved successfully!").show();
-                    clearFields();
-                    loadData();
+                if (btnSaveCustomer.getText().equals("Update Customer")) {
+                    if (DatabaseAccessCode.updateCustomer(
+                            txtEmail.getText().toLowerCase().trim(),
+                            txtName.getText().trim(),
+                            txtContact.getText(),
+                            Double.parseDouble(txtSalary.getText().trim()))) {
+                        new Alert(Alert.AlertType.INFORMATION, "Customer Updated Successfully!").show();
+                        clearFields();
+                        btnSaveCustomer.setText("Save Customer");
+                        txtEmail.setEditable(true);
+                        loadData();
+                    } else {
+                        new Alert(Alert.AlertType.WARNING, "Try again").show();
+                    }
                 } else {
-                    new Alert(Alert.AlertType.WARNING, "Try again!");
+                    if (DatabaseAccessCode.creatCustomer(
+                            txtEmail.getText().toLowerCase().trim(),
+                            txtName.getText().trim(),
+                            txtContact.getText(),
+                            Double.parseDouble(txtSalary.getText().trim()))
+                    ) {
+                        new Alert(Alert.AlertType.INFORMATION, "Customer saved successfully!").show();
+                        clearFields();
+                        loadData();
+                    } else {
+                        new Alert(Alert.AlertType.WARNING, "Try again!").show();
+                    }
                 }
             } catch (SQLException | ClassNotFoundException e) {
                 new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
