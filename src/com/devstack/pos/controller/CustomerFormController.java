@@ -44,7 +44,6 @@ public class CustomerFormController {
         colOperate.setCellValueFactory(new PropertyValueFactory<>("operate"));
         loadData();
     }
-
     private void loadData() throws SQLException, ClassNotFoundException {
         ObservableList<CustomerTm> customers = FXCollections.observableArrayList();
         int counter = 1;
