@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CustomerFormController {
 
@@ -44,19 +46,9 @@ public class CustomerFormController {
         colContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
         colSalary.setCellValueFactory(new PropertyValueFactory<>("salary"));
         colOperate.setCellValueFactory(new PropertyValueFactory<>("operate"));
-        loadData();
-    }
 
-    private void loadData() throws SQLException, ClassNotFoundException {
-        ObservableList<CustomerTm> customers = FXCollections.observableArrayList();
-        int counter = 1;
-        for (CustomerDto c : DatabaseAccessCode.searchCustomer(txtSearch.getText().trim().toLowerCase())) {
-            Button operate = new Button("Delete");
-            customers.add(
-                    new CustomerTm(counter++, c.getEmail(), c.getName(), c.getContact(), c.getSalary(), operate)
-            );
-        }
-        tblCustomer.setItems(customers);
+        loadData();
+
         tblCustomer.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue != null) {
@@ -64,6 +56,59 @@ public class CustomerFormController {
                     }
                 }
         );
+        txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                loadData();
+            } catch (SQLException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+    }
+
+    private void loadData() throws SQLException, ClassNotFoundException {
+        ObservableList<CustomerTm> customers = FXCollections.observableArrayList();
+        int counter = 1;
+        for (CustomerDto c :
+                txtSearch.getText().length()>0? DatabaseAccessCode.searchCustomer(txtSearch.getText().trim().toLowerCase()):DatabaseAccessCode.findAllCustomer()) {
+            Button operate = new Button("Delete");
+            operate.setOnAction(event -> {
+                try {
+                    deleteButtonSetOnAction(c);
+                } catch (SQLException | ClassNotFoundException e) {
+                    new Alert(Alert.AlertType.ERROR,e.getMessage()).show();
+                }
+            });
+            customers.add(
+                    new CustomerTm(counter++, c.getEmail(), c.getName(), c.getContact(), c.getSalary(), operate)
+            );
+        }
+        tblCustomer.setItems(customers);
+    }
+
+    private void deleteButtonSetOnAction(CustomerDto c) throws SQLException, ClassNotFoundException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are sure to delete?",ButtonType.YES,ButtonType.NO);
+
+        Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+        yesButton.setDefaultButton(false);
+        Button noButton = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+        noButton.setDefaultButton(false);
+
+        Optional<ButtonType> buttonType = alert.showAndWait();
+        if (buttonType.get().equals(ButtonType.YES)){
+
+            if (DatabaseAccessCode.deleteCustomer(c.getEmail())){
+                new Alert(Alert.AlertType.INFORMATION,"Customer deleted!").show();
+                clearFields();
+
+                txtEmail.setEditable(true);
+                loadData();
+            }else {
+                new Alert(Alert.AlertType.WARNING,"Try again!").show();
+            }
+        }
+
+
     }
 
     private void setItemsToFields(CustomerTm customerTm) {
