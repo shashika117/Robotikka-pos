@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class CustomerFormController {
 
@@ -45,6 +46,7 @@ public class CustomerFormController {
         colOperate.setCellValueFactory(new PropertyValueFactory<>("operate"));
         loadData();
     }
+
     private void loadData() throws SQLException, ClassNotFoundException {
         ObservableList<CustomerTm> customers = FXCollections.observableArrayList();
         int counter = 1;
@@ -72,16 +74,20 @@ public class CustomerFormController {
     }
 
     public void saveCustomerOnAction(ActionEvent event) {
-        if (txtEmail == null) {
-            new Alert(Alert.AlertType.WARNING, "email cannot be empty!").show();
+        if (Objects.equals(txtEmail.getText(), "") ||
+                Objects.equals(txtName.getText(), "") ||
+                Objects.equals(txtContact.getText(), "") ||
+                Objects.equals(txtSalary.getText(), "")
+        ) {
+            new Alert(Alert.AlertType.WARNING, "fields cannot be empty!").show();
         } else {
             try {
                 if (DatabaseAccessCode.creatCustomer(
                         txtEmail.getText().toLowerCase().trim(),
                         txtName.getText().trim(),
                         txtContact.getText(),
-                        Double.parseDouble(txtSalary.getText().trim())
-                )) {
+                        Double.parseDouble(txtSalary.getText().trim()))
+                ) {
                     new Alert(Alert.AlertType.INFORMATION, "Customer saved successfully!").show();
                     clearFields();
                     loadData();
@@ -89,7 +95,6 @@ public class CustomerFormController {
                     new Alert(Alert.AlertType.WARNING, "Try again!");
                 }
             } catch (SQLException | ClassNotFoundException e) {
-                e.printStackTrace();
                 new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
             }
         }
