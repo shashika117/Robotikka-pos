@@ -122,4 +122,26 @@ public class DatabaseAccessCode {
         return customers;
     }
     //Customer management
+
+    //Product management
+    public static int getLastProductCode() throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        String sql="SELECT code FROM product ORDER BY code DESC LIMIT 1";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        ResultSet set = statement.executeQuery();
+        if (set.next()){
+            return set.getInt(1);
+        }
+        return 0;
+    }
+    public static boolean saveProduct(int code,String description) throws SQLException, ClassNotFoundException {
+        Connection connection = DbConnection.getInstance().getConnection();
+        String sql = "INSERT INTO product VALUES (?,?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setInt(1,code);
+        statement.setString(2,description);
+        return statement.executeUpdate()>0;
+    }
+
+    //Product management
 }
