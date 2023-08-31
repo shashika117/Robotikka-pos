@@ -24,7 +24,7 @@ public class LoginFormController {
 
     public void signInOnAction() {
         try {
-            UserDto ud = DatabaseAccessCode.findUser(txtEmail.getText().trim().toLowerCase());
+            UserDto ud = new DatabaseAccessCode().findUser(txtEmail.getText().trim().toLowerCase());
             if (ud!=null) {
                 if (PasswordManager.checkPassword(
                         txtPassword.getText().trim(), ud.getPassword())) {

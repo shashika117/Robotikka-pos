@@ -10,7 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -70,7 +69,8 @@ public class CustomerFormController {
         ObservableList<CustomerTm> customers = FXCollections.observableArrayList();
         int counter = 1;
         for (CustomerDto c :
-                txtSearch.getText().length()>0? DatabaseAccessCode.searchCustomer(txtSearch.getText().trim().toLowerCase()):DatabaseAccessCode.findAllCustomer()) {
+                txtSearch.getText().length()>0? new DatabaseAccessCode().searchCustomer(txtSearch.getText().trim().toLowerCase()):
+                        new DatabaseAccessCode().findAllCustomer()) {
             Button operate = new Button("Delete");
             operate.setOnAction(event -> {
                 try {
@@ -97,7 +97,7 @@ public class CustomerFormController {
         Optional<ButtonType> buttonType = alert.showAndWait();
         if (buttonType.get().equals(ButtonType.YES)){
 
-            if (DatabaseAccessCode.deleteCustomer(c.getEmail())){
+            if (new DatabaseAccessCode().deleteCustomer(c.getEmail())){
                 new Alert(Alert.AlertType.INFORMATION,"Customer deleted!").show();
                 clearFields();
 
@@ -145,7 +145,7 @@ public class CustomerFormController {
         } else {
             try {
                 if (btnSaveCustomer.getText().equals("Update Customer")) {
-                    if (DatabaseAccessCode.updateCustomer(
+                    if (new DatabaseAccessCode().updateCustomer(
                             txtEmail.getText().toLowerCase().trim(),
                             txtName.getText().trim(),
                             txtContact.getText(),
@@ -159,7 +159,7 @@ public class CustomerFormController {
                         new Alert(Alert.AlertType.WARNING, "Try again").show();
                     }
                 } else {
-                    if (DatabaseAccessCode.creatCustomer(
+                    if (new DatabaseAccessCode().creatCustomer(
                             txtEmail.getText().toLowerCase().trim(),
                             txtName.getText().trim(),
                             txtContact.getText(),

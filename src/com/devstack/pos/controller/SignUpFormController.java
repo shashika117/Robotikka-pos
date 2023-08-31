@@ -12,9 +12,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SignUpFormController {
@@ -32,7 +29,7 @@ public class SignUpFormController {
             new Alert(Alert.AlertType.WARNING, "email or password cannot be empty!").show();
         } else {
             try {
-                if (DatabaseAccessCode.createUser(
+                if (new DatabaseAccessCode().createUser(
                         txtEmail.getText().toLowerCase().trim(),
                         PasswordManager.encryptPassword(txtPassword.getText().trim()))) {
 
