@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CustomerDaoImpl implements CustomerDao {
     @Override
-    public boolean saveCustomer(Customer customer) throws SQLException, ClassNotFoundException {
+    public boolean save(Customer customer) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO customer VALUES (?,?,?,?)";
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
         statement.setString(1, customer.getEmail());
@@ -24,7 +24,7 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public boolean updateCustomer(Customer customer) throws SQLException, ClassNotFoundException {
+    public boolean update(Customer customer) throws SQLException, ClassNotFoundException {
 
         String sql =
                 "UPDATE customer SET name = ?,contact = ?,salary = ? WHERE email = ?";
@@ -38,7 +38,7 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public boolean deleteCustomer(String email) throws SQLException, ClassNotFoundException {
+    public boolean delete(String email) throws SQLException, ClassNotFoundException {
         String sql =
                 "DELETE FROM customer WHERE email = ?";
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
@@ -48,7 +48,7 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public Customer findCustomer(String email) throws SQLException, ClassNotFoundException {
+    public Customer find(String email) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM customer WHERE email = ?";
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
         statement.setString(1, email);
@@ -63,7 +63,7 @@ public class CustomerDaoImpl implements CustomerDao {
         return null;    }
 
     @Override
-    public List<Customer> findAllCustomers() throws SQLException, ClassNotFoundException {
+    public List<Customer> findAll() throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM customer";
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
         ResultSet set = statement.executeQuery();

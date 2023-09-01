@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ProductDaoImpl implements ProductDao {
     @Override
-    public boolean saveProduct(Product product) throws SQLException, ClassNotFoundException {
+    public boolean save(Product product) throws SQLException, ClassNotFoundException {
         Connection connection = DbConnection.getInstance().getConnection();
         String sql = "INSERT INTO product VALUES (?,?)";
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -24,7 +24,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public boolean updateProduct(Product product) throws SQLException, ClassNotFoundException {
+    public boolean update(Product product) throws SQLException, ClassNotFoundException {
         String sql =
                 "UPDATE product SET description = ? WHERE code = ?";
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
@@ -35,7 +35,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public boolean deleteProduct(int code) throws SQLException, ClassNotFoundException {
+    public boolean delete(Integer code) throws SQLException, ClassNotFoundException {
         String sql = "DELETE FROM product WHERE code =?";
 
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
@@ -44,7 +44,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Product findProduct(int code) throws SQLException, ClassNotFoundException {
+    public Product find(Integer code) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM product WHERE code = ?";
 
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
@@ -58,7 +58,7 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public List<Product> findAllProducts() throws SQLException, ClassNotFoundException {
+    public List<Product> findAll() throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM product";
 
         PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
