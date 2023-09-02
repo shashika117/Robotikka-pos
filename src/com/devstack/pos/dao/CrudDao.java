@@ -5,7 +5,7 @@ import com.devstack.pos.entity.Customer;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface CrudDao <T,Id> {
+public interface CrudDao <T,Id> extends SuperDao{
     public boolean save(T t) throws SQLException, ClassNotFoundException;
     public boolean update(T t) throws SQLException, ClassNotFoundException;
     public boolean delete(Id id) throws SQLException, ClassNotFoundException;
