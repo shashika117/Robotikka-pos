@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseAccessCode {
-    UserDao userDao = (UserDao) DaoFactory.getInstance().getDao(DaoType.User);
-    CustomerDao customerDao = (CustomerDao) DaoFactory.getInstance().getDao(DaoType.Customer);
-    ProductDao productDao = (ProductDao) DaoFactory.getInstance().getDao(DaoType.Product);
+    UserDao userDao = DaoFactory.getInstance().getDao(DaoType.User);
+    CustomerDao customerDao = DaoFactory.getInstance().getDao(DaoType.Customer);
+    ProductDao productDao = DaoFactory.getInstance().getDao(DaoType.Product);
 
     //User management
     public boolean createUser(String email, String password) throws ClassNotFoundException, SQLException {
@@ -35,7 +35,6 @@ public class DatabaseAccessCode {
 
     //Customer management
     public boolean creatCustomer(String email, String name, String contact, double salary) throws ClassNotFoundException, SQLException {
-
         return customerDao.save(new Customer(email, name, contact, salary));
     }
 

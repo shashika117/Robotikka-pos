@@ -1,9 +1,11 @@
 package com.devstack.pos.dao.custom.impl;
 
+import com.devstack.pos.dao.CrudUtil;
 import com.devstack.pos.dao.custom.UserDao;
 import com.devstack.pos.db.DbConnection;
 import com.devstack.pos.entity.User;
 
+import javax.sql.rowset.CachedRowSet;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,41 +15,22 @@ import java.util.List;
 public class UserDaoImpl implements UserDao {
     @Override
     public boolean save(User user) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO user VALUES (?,?)";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        statement.setString(1, user.getEmail());
-        statement.setString(2, user.getPassword());
-        return statement.executeUpdate() > 0;
+        return CrudUtil.execute("INSERT INTO user VALUES (?,?)",user.getEmail(),user.getPassword());
     }
 
     @Override
     public boolean update(User user) throws SQLException, ClassNotFoundException {
-        String sql = "UPDATE user SET password = ? WHERE email = ?";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        statement.setString(2, user.getEmail());
-        statement.setString(1, user.getPassword());
-        return statement.executeUpdate() > 0;
+        return CrudUtil.execute("UPDATE user SET password = ? WHERE email = ?",user.getEmail(),user.getPassword());
     }
 
     @Override
     public boolean delete(String email) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM user WHERE email =?";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        statement.setString(1, email);
-        return statement.executeUpdate() > 0;
+        return CrudUtil.execute("DELETE FROM user WHERE email =?",email);
     }
 
     @Override
     public User find(String email) throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM user WHERE email = ?";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        statement.setString(1, email);
-
-        ResultSet set = statement.executeQuery();
+        ResultSet set = CrudUtil.execute("SELECT * FROM user WHERE email = ?",email);
         if (set.next()) {
             return new User(set.getString(1), set.getString(2));
         }
@@ -56,11 +39,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> findAll() throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM user";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-
-        ResultSet set = statement.executeQuery();
+        ResultSet set = CrudUtil.execute("SELECT * FROM user");
         List<User> users = new ArrayList<>();
         while (set.next()) {
             users.add(new User(set.getString(1), set.getString(2)));

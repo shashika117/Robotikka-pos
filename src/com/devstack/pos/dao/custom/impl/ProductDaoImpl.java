@@ -1,9 +1,9 @@
 package com.devstack.pos.dao.custom.impl;
 
+import com.devstack.pos.dao.CrudUtil;
 import com.devstack.pos.dao.custom.ProductDao;
 import com.devstack.pos.db.DbConnection;
 import com.devstack.pos.entity.Product;
-import com.devstack.pos.entity.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,42 +15,23 @@ import java.util.List;
 public class ProductDaoImpl implements ProductDao {
     @Override
     public boolean save(Product product) throws SQLException, ClassNotFoundException {
-        Connection connection = DbConnection.getInstance().getConnection();
-        String sql = "INSERT INTO product VALUES (?,?)";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, product.getCode());
-        statement.setString(2, product.getDescription());
-        return statement.executeUpdate() > 0;
+        return CrudUtil.execute("INSERT INTO product VALUES (?,?)",product.getCode(),product.getDescription());
     }
 
     @Override
     public boolean update(Product product) throws SQLException, ClassNotFoundException {
-        String sql =
-                "UPDATE product SET description = ? WHERE code = ?";
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        statement.setString(1, product.getDescription());
-        statement.setInt(2, product.getCode());
-
-        return statement.executeUpdate() > 0;
+        return CrudUtil.execute("UPDATE product SET description = ? WHERE code = ?",
+                product.getCode(),product.getDescription());
     }
 
     @Override
     public boolean delete(Integer code) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM product WHERE code =?";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        statement.setInt(1, code);
-        return statement.executeUpdate() > 0;
+        return CrudUtil.execute( "DELETE FROM product WHERE code =?",code);
     }
 
     @Override
     public Product find(Integer code) throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM product WHERE code = ?";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-        statement.setInt(1, code);
-
-        ResultSet set = statement.executeQuery();
+        ResultSet set = CrudUtil.execute("SELECT * FROM product WHERE code = ?",code);
         if (set.next()) {
             return new Product(set.getInt(1), set.getString(2));
         }
@@ -59,11 +40,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> findAll() throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM product";
-
-        PreparedStatement statement = DbConnection.getInstance().getConnection().prepareStatement(sql);
-
-        ResultSet set = statement.executeQuery();
+        ResultSet set = CrudUtil.execute("SELECT * FROM product");
         List<Product> products = new ArrayList<>();
         while (set.next()) {
             products.add(new Product(set.getInt(1), set.getString(2)));
@@ -74,10 +51,7 @@ public class ProductDaoImpl implements ProductDao {
     //---------------------------------
     @Override
     public int getLastProductCode() throws SQLException, ClassNotFoundException {
-        Connection connection = DbConnection.getInstance().getConnection();
-        String sql="SELECT code FROM product ORDER BY code DESC LIMIT 1";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        ResultSet set = statement.executeQuery();
+        ResultSet set = CrudUtil.execute("SELECT code FROM product ORDER BY code DESC LIMIT 1");
         if (set.next()){
             return set.getInt(1);
         }
